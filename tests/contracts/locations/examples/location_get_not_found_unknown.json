@@ -1,0 +1,10 @@
+{
+  "fullMethodName": "location.v1.LocationService/GetUserLocation",
+  "request": {
+    "userEmail": "missing@specmatic.io"
+  },
+  "response": {
+    "errorCode": 5,
+    "errorMessage": "User not found"
+  }
+}

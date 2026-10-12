@@ -1,0 +1,20 @@
+syntax = "proto3";
+package location.v1;
+
+import "buf/validate/validate.proto";
+
+service LocationService {
+  rpc GetUserLocation(GetUserLocationRequest) returns (GetUserLocationResponse);
+}
+
+message GetUserLocationRequest {
+  string user_email = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.email = true
+  ];
+}
+
+message GetUserLocationResponse {
+  int32 user_id = 1 [(buf.validate.field).required = true];
+  string location_code = 2 [(buf.validate.field).required = true];
+}

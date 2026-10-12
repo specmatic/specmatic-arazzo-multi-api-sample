@@ -1,0 +1,10 @@
+{
+  "fullMethodName": "location.v1.LocationService/GetUserLocation",
+  "request": {
+    "userEmail": "blr@specmatic.io"
+  },
+  "response": {
+    "userId": 1,
+    "locationCode": "IND-BLR"
+  }
+}

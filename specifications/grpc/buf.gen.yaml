@@ -1,0 +1,9 @@
+version: v2
+inputs:
+  - directory: .
+plugins:
+  - remote: buf.build/protocolbuffers/python:v36.2
+    out: ../../services/location/generated
+    include_imports: true
+  - remote: buf.build/grpc/python:v1.84.0
+    out: ../../services/location/generated
