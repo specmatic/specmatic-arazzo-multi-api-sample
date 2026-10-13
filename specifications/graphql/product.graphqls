@@ -1,0 +1,10 @@
+type Query {
+  products(locationCode: String!): [Product!]!
+}
+
+type Product {
+  productId: Int!
+  name: String!
+  price: Float!
+  inventory: Int!
+}

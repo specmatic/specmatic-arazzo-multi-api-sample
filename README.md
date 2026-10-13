@@ -53,14 +53,14 @@ docker compose up --build
 
 This launches the following services:
 
-| Service           | Port | Description                    |
-| ----------------- | ---- | ------------------------------ |
-| **Location gRPC** | 50051 | Provides user location details |
-| **Products API**  | 3001 | Returns products by location   |
-| **Order API**     | 3002 | Handles order lifecycle        |
-| **Warehouse API** | 3003 | Manages inventory operations   |
-| **Kafka**         | 9092 | Internal broker port           |
-| **Postgres**      | 5432 | Shared database                |
+| Service                  | Port  | Description                    |
+|--------------------------|-------|--------------------------------|
+| **Location gRPC**        | 50051 | Provides user location details |
+| **Products GraphQL API** | 4000  | Returns products by location   |
+| **Order API**            | 3002  | Handles order lifecycle        |
+| **Warehouse API**        | 3003  | Manages inventory operations   |
+| **Kafka**                | 9092  | Internal broker port           |
+| **Postgres**             | 5432  | Shared database                |
 
 ---
 
@@ -73,7 +73,7 @@ This launches the following services:
 
 ### **Products Service**
 
-* Fetches products based on a location code.
+* Exposes a GraphQL query to fetch products by location code.
 * Validates product availability before ordering.
 
 ### **Order Service**
@@ -102,11 +102,16 @@ Used for immediate operations:
 
 * Fetching user location details
 
+### **Synchronous GraphQL Calls**
+
+Used for immediate operations:
+
+* Retrieving available products by location
+
 ### **Synchronous REST Calls**
 
 Used for immediate operations:
 
-* Retrieving available products
 * Getting final order status
 
 ### **Asynchronous Kafka Events**

@@ -1,0 +1,11 @@
+request:
+  body: |
+    query {
+      products(locationCode: "IND-DEL") {
+        productId
+        name
+        price
+        inventory
+      }
+    }
+response: []

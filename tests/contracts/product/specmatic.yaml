@@ -4,9 +4,6 @@ systemUnderTest:
     $ref: "#/components/services/product"
     runOptions:
       $ref: "#/components/runOptions/productTest"
-    data:
-      examples:
-        - directories: [examples]
 specmatic:
   settings:
     test:
@@ -23,15 +20,22 @@ specmatic:
 components:
   services:
     product:
-      description: Product API
+      description: Products GraphQL API
       definitions:
         - definition:
             source:
               filesystem:
-                directory: ../../../specifications/openapi
-            specs: [product.yaml]
+                directory: ../../../specifications/graphql
+            specs:
+              - spec:
+                  id: product
+                  path: product.graphqls
   runOptions:
     productTest:
-      openapi:
+      graphqlsdl:
         type: test
-        baseUrl: http://product:3001
+        specs:
+          - spec:
+              id: product
+              host: product
+              port: 4000

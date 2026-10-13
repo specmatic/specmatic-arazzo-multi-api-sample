@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     kafka_consumer_group: str = Field(default="warehouse", alias="KAFKA_CONSUMER_GROUP")
 
     location_service_port: int = Field(default=50051, alias="LOCATION_SERVICE_PORT")
-    product_service_port: int = Field(default=5002, alias="PRODUCT_SERVICE_PORT")
+    product_service_port: int = Field(default=4000, alias="PRODUCT_SERVICE_PORT")
     order_service_port: int = Field(default=5003, alias="ORDER_SERVICE_PORT")
     warehouse_service_port: int = Field(default=5004, alias="WAREHOUSE_SERVICE_PORT")
 
