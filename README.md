@@ -134,3 +134,10 @@ This combination supports resilience, scalability, and eventual consistency.
 | `wip-orders`              | Orders pending inventory confirmation      |
 | `accepted-orders`         | Orders successfully confirmed and reserved |
 | `out-for-delivery-orders` | Delivery dispatch and tracking workflow    |
+
+## Execute Workflow via Codex
+
+```text
+I've started all the services in docker. I would like you to take specifications/PlaceOrder.arazzo.yaml and specifications/
+  PlaceOrder.arazzo_input.json and execute the workflow?
+```
