@@ -112,7 +112,8 @@ Used for immediate operations:
 
 Used for immediate operations:
 
-* Getting final order status
+* Getting order status
+* Updating delivery status
 
 ### **Asynchronous Kafka Events**
 
@@ -120,7 +121,6 @@ Used for background or long-running workflows:
 
 * Order creation
 * Inventory reservation
-* Delivery status updates
 
 This combination supports resilience, scalability, and eventual consistency.
 
@@ -133,7 +133,6 @@ This combination supports resilience, scalability, and eventual consistency.
 | `create-orders`           | Initiates the order creation workflow      |
 | `wip-orders`              | Orders pending inventory confirmation      |
 | `accepted-orders`         | Orders successfully confirmed and reserved |
-| `out-for-delivery-orders` | Delivery dispatch and tracking workflow    |
 
 ## Execute Workflow via Codex
 

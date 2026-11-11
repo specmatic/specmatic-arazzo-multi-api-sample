@@ -1,1 +1,0 @@
-"""Order AsyncAPI contract tests."""

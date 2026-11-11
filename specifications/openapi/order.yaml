@@ -3,7 +3,7 @@ openapi: 3.0.3
 info:
   title: Order Service API
   version: 1.0.0
-  description: A service to retrieve detailed order information.
+  description: A service to manage orders and retrieve detailed order information.
   contact:
     name: Specmatic
     email: specmatic@devs.io
@@ -18,11 +18,11 @@ tags:
   - name: Order
 
 paths:
-  /orders:
+  /orders/out-for-delivery:
     post:
-      summary: Accept a pending order
-      description: Marks a pending order as accepted after inventory reservation.
-      operationId: acceptOrder
+      summary: Accept and dispatch an order
+      description: Marks an inventory-reserved order as accepted and out for delivery.
+      operationId: acceptAndDispatchOrder
       tags:
         - Order
       requestBody:
@@ -30,59 +30,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/OrderAcceptanceRequest"
+              $ref: "#/components/schemas/OutForDeliveryRequest"
       responses:
         "200":
-          description: Order accepted.
-        "400":
-          description: Order is not pending.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
-          description: Order not found.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-  /orders/{orderId}:
-    get:
-      summary: Get order details
-      description: Retrieves detailed information for a specific order using its unique identifier.
-      operationId: getOrderDetails
-      tags:
-        - Order
-      parameters:
-        - name: orderId
-          in: path
-          description: The unique identifier of the order to retrieve.
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: Successful retrieval of order details.
+          description: Order accepted and marked as out for delivery.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderResponse"
-        "400":
-          description: Invalid request. Usually due to a missing or malformed orderId.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: Order not found.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-
 components:
   schemas:
-    OrderAcceptanceRequest:
+    OutForDeliveryRequest:
       type: object
       required:
         - orderId
@@ -116,7 +80,6 @@ components:
             - ACCEPTED
             - OUT_FOR_DELIVERY
           example: "PENDING"
-
     ErrorResponse:
       type: object
       required:

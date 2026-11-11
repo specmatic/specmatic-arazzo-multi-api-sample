@@ -1,0 +1,122 @@
+arazzo: 1.2.0
+info:
+  title: Arazzo Workflow
+  version: 1.0.0
+sourceDescriptions:
+  - name: LocationProto
+    url: ./grpc/location/v1/location.proto
+    type: protobuf
+  - name: ProductGraphQL
+    url: ./graphql/product.graphqls
+    type: graphql
+  - name: AsyncOrderApi
+    url: ./asyncapi/order.yaml
+    type: asyncapi
+  - name: WarehouseApi
+    url: ./openapi/warehouse.yaml
+    type: openapi
+  - name: OrderApi
+    url: ./openapi/order.yaml
+    type: openapi
+workflows:
+  - workflowId: PlaceOrder
+    inputs:
+      required:
+        - getUserLocation
+        - createOrderSend
+      type: object
+      properties:
+        createOrderSend:
+          required:
+            - requestId
+          type: object
+          properties:
+            requestId:
+              type: string
+              format: uuid
+        getUserLocation:
+          required:
+            - userEmail
+          type: object
+          properties:
+            userEmail:
+              type: string
+              format: email
+    steps:
+      - stepId: getUserLocation
+        rpcProtocol: grpc
+        rpcMethod: $sourceDescriptions.LocationProto.location.v1.LocationService/GetUserLocation
+        requestBody:
+          payload:
+            userEmail: $inputs.getUserLocation.userEmail
+        successCriteria:
+          - condition: '$response.status#/code == 0'
+        outputs:
+          userId: '$response.body#/userId'
+          locationCode: '$response.body#/locationCode'
+      - stepId: queryProducts
+        parameters:
+          - name: locationCode
+            in: variable
+            value: $steps.getUserLocation.outputs.locationCode
+        graphqlOperation:
+          schema: $sourceDescriptions.ProductGraphQL
+          operation: |
+            query ($locationCode: String!) {
+              products(locationCode: $locationCode) {
+                productId
+                inventory
+              }
+            }
+        successCriteria:
+          - condition: '$response.body#/errors/0 == null'
+        onSuccess:
+          - name: productsIsArrayEmpty
+            type: end
+            criteria:
+              - condition: '$response.body#/data/products/0 == null'
+        outputs:
+          productId: '$response.body#/data/products/0/productId'
+          inventory: '$response.body#/data/products/0/inventory'
+      - stepId: createOrderSend
+        operationId: $sourceDescriptions.AsyncOrderApi.createOrder
+        parameters:
+          - name: requestId
+            in: header
+            value: $inputs.createOrderSend.requestId
+        requestBody:
+          payload:
+            userId: $steps.getUserLocation.outputs.userId
+            productId: $steps.queryProducts.outputs.productId
+            inventory: $steps.queryProducts.outputs.inventory
+        outputs:
+          requestId: $message.header.requestId
+        action: send
+      - stepId: createOrderReceive
+        correlationId: $steps.createOrderSend.outputs.requestId
+        operationId: $sourceDescriptions.AsyncOrderApi.createOrder
+        timeout: 6000
+        outputs:
+          orderId: '$message.payload#/orderId'
+        action: receive
+      - stepId: reserveInventory
+        operationId: $sourceDescriptions.WarehouseApi.reserveInventory
+        dependsOn:
+          - createOrderReceive
+        parameters:
+          - name: orderId
+            in: query
+            value: $steps.createOrderReceive.outputs.orderId
+        successCriteria:
+          - condition: $statusCode == 200
+      - stepId: dispatchOrder
+        operationId: $sourceDescriptions.OrderApi.acceptAndDispatchOrder
+        dependsOn:
+          - createOrderReceive
+        requestBody:
+          contentType: application/json
+          payload:
+            orderId: $steps.createOrderReceive.outputs.orderId
+        successCriteria:
+          - condition: $statusCode == 200
+          - condition: $response.body#/status == 'OUT_FOR_DELIVERY'

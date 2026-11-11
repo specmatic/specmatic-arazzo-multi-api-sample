@@ -1,0 +1,17 @@
+{
+    "PlaceOrder": {
+        "DEFAULT": {
+            "createOrderSend": {
+                "requestId": "60183442-7e36-4a13-91c3-30e9a5ec9e1c"
+            },
+            "getUserLocation": {
+                "userEmail": "blr@specmatic.io"
+            }
+        },
+        "queryProducts.productsIsArrayEmpty": {
+            "getUserLocation": {
+                "userEmail": "del@specmatic.io"
+            }
+        }
+    }
+}

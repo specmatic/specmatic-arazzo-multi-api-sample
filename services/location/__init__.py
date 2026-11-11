@@ -1,1 +1,0 @@
-"""Location gRPC service package."""
